@@ -18,7 +18,7 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset('assets/icon/app_icon.png'),
+            Image.asset('assets/icon/splash_icon.png'),
             const Text(
               'ATR ELECTRONIC',
               style: TextStyle(
