@@ -14,7 +14,7 @@ bool RTCController::begin() {
 
     if (rtc.lostPower()) {
         Serial.println("RTC lost power, resetting time.");
-        rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // Reset to compile time
+        // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // Reset to compile time
     }
 
     return true; // RTC initialized successfully
@@ -22,14 +22,22 @@ bool RTCController::begin() {
 
 bool RTCController::isNightMode() {
     if (activateNightMode) {
-         DateTime now = rtc.now();
-         int hour = now.hour();
-         return (hour >= nightStartHour || hour < nightEndHour);
-      }
-     return false;
+        DateTime now = rtc.now();
+        int hour = now.hour();
+
+        if (nightStartHour < nightEndHour) {
+            // Simple interval (e.g., 0 to 5 AM)
+            return (hour >= nightStartHour && hour < nightEndHour);
+        } else {
+            // Wrapping interval (e.g., 23 to 5 AM)
+            return (hour >= nightStartHour || hour < nightEndHour);
+        }
+    }
+    return false;
 }
 
 String RTCController::getCurrentTime() {
+    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     DateTime now = rtc.now();
     char timeStr[9];
     sprintf(timeStr, "%02d:%02d:%02d", now.hour(), now.minute(), now.second());

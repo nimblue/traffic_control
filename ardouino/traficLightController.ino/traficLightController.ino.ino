@@ -5,7 +5,8 @@
 #include <SoftwareSerial.h>
 
 // Flag to check if RTC is available
-bool rtcAvailable = true;
+bool rtcAvailable = true;  
+const long interval = 100;
 
 void setup() {
     Serial.begin(9600); 
@@ -19,20 +20,30 @@ void setup() {
         rtcAvailable = false; // RTC is not available
     } else {
         Serial.println("RTC initialized successfully.");
+        Serial.println(rtc.getCurrentTime());
     }
 
     Serial.println("Traffic light system initialized.");
 }
 
+
 void loop() {
     currentMillis = millis();
     
-    // Check if RTC is available and handle traffic light modes
-    if (rtcAvailable && rtc.isNightMode()) {
-        activateFlashingRed(); // Flash red lights during night mode
-    } else {
-        handleTrafficLightPhases(); // Normal traffic light operation
-    }
+    // Check if 100 milliseconds have passed
+    if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;  // Save the last time the loop was updated
 
-    processBluetoothCommands(); // Bluetooth command processing
+        // Serial.print("is night mode: "); // Flash red lights during night mode
+        // Serial.println(rtc.isNightMode());
+
+        // Check if RTC is available and handle traffic light modes
+        if (rtcAvailable && rtc.isNightMode()) {
+            activateFlashingRed();
+        } else {
+            handleTrafficLightPhases(); // Normal traffic light operation
+        }
+
+        processBluetoothCommands(); // Bluetooth command processing
+    }
 }

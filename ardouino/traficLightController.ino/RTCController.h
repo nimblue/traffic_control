@@ -13,7 +13,7 @@ public:
 
 private:
     RTC_DS3231 rtc; // Internal RTC instance
-    const int nightStartHour = 0;
+    const int nightStartHour = 24;
     const int nightEndHour = 5;
 };
 
